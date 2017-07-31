@@ -7,7 +7,7 @@ The work toward Release 1.0 is currently on implementing communication with the 
 
 In the meantime..
 
-LogNut can be used at this point on Android, and on Windows.
+LogNut can be used at this point on Xamarin.Forms /Android, and on Windows .NET Desktop applications.
 
 
 Features/Advantages of LogNut:
