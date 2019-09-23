@@ -7,14 +7,15 @@ The work toward Release 1.0 is currently on implementing communication with the 
 
 In the meantime..
 
-LogNut can be used at this point on Xamarin.Forms /Android, and on Windows .NET Desktop applications.
+LogNut can be used at this point on C# applications.
 
 
 Features/Advantages of LogNut:
 * You can start using this super-easily with only one line of code and zero configuration-files
 * A simplified, well-documented API with Java and C# examples to make this the easiest logging library to use
 * Great care as been taken to provide an API that is clear, fluid, symmetrical and consistent
-* With the appropriate server-subscription, you can receive realtime log output on your Android phone or tablet
+* For resource-constrained or embedded systems especially, can output to ETW for ultra-efficient operation.
+* (TBD) With the appropriate server-subscription, you can receive realtime log output on your Android phone or tablet
 * File Output includes a comprehensive selection of output-field information that is fully configurable
 * Flexible rollover, file-management and formatting options (optional -- not required)
 * File Output may optionally be formatted for input into a spreadsheet
