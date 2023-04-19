@@ -1,0 +1,38 @@
+﻿
+*Do a robust test of having multiple threads and processes writing to the same file, while doing rollovers. I got an error there.
+
+*Let's try again to make it work with the simple Pipe code, and if that doesn't work - stop using the original PipeLib and just use the advanced code from today.
+
+Make certain that the LogManager.Clear cleans up everything including the queue of logs to be sent out to the log-servicing process.
+
+Fix it so that if logs fail to get serviced by the log-servicing process, that they go out by normal processing then (and to a distinct log-file).
+
+? Should the chain of IOutputPipes be attached to individual loggers, or system-wide such as when attached to LogManager?
+
+Change from using Yaml for the config-storage format, to Protocol Buffers. Or just eliminate the Yaml entirely, as we can simply read from unstructured text files.
+
+For Release:
+
+*Ensure every unit-test passes
+
+*Ensure that every code module, and every piece of code, is utilitized toward some requirement.
+
+*Get the central-server facilities up and running.
+
+*Search for every TODO and CBL and resolve them
+
+*Ensure this is compatible with .NET Core and .NET Standard
+
+*Ensure this library works with Linux and Mac
+
+*Ensure this library works with ReactOS
+
+*Make this Nuget-integrated
+
+*Ensure you can log collections - and that that would list every member of that collection, and it's size.
+
+*Add the ability to log in Markdown syntax, and capture entire tables or data-structure
+
+**Do unit-tests for logging when it must rollover but I have not set the FileOutputFilename.
+
+ //CBL  I need to handle the situation that occurs when the stuff to be written exceeds MaxFileSize!

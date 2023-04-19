@@ -1,0 +1,83 @@
+﻿Criteria/DoList:
+
+*I want this to be as efficient as possible. Thus the bit-masks for category-enabling.
+Remove the category-disable, and check whether using the Keywords does disable the logging for that
+particular category (keyword).
+
+*The method enter/exit needs to be it's own category automatically.
+*The API needs to provide for simultaneous category and level selection, e.g. "Disable category X except for Warn and above."
+
+
+For categories - I think I should make this mirror the ETW 64-bit bit-array, for efficiency. Every category that the dev creates, has associated with it a 64-bit value that can be used with the ETW output directly.
+Or am I mistaken - does that apply only to filtering-out the results? But has nothing to do with the logging itself? I must find out.
+I should make that a ulong (Unsigned 64-bit integer).
+
+Consider this regarding structs vs class:
+https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/choosing-between-class-and-struct
+https://docs.microsoft.com/en-us/dotnet/standard/design-guidelines/struct
+
+I should also consider carefully where to use structs instead of classes for this. I should test every substantive change, for performance efficiency.
+
+***I yet need to implement this for format strings.
+
+For using ETW we have a class that is an IOutputPipe named EtwOutputPipe.
+
+I want to repurpose the categories of LogNut via the 64-bit Keywords vector. How? This needs to be dynamic (defined by the user-developer).
+Perhaps I can reserve the first several bits to represent the logging-level (Trace, Debug, Info, Warning, Error, Fatal)
+and the remainder are assigned to categories.
+
+Alternatively I could use the ETW 'Level' property to implement the LogLevel equivalent.
+
+When using this ETW logging facility, you must call LogManager.Clear before your program exits,
+which in turn calls the Clear method of your output-pipe. This closes out the TraceEventSession.
+Q: What if that does not happen? I need to know what that entails and how to mitigate it.
+
+
+So I shall use the first 6 bits of the ETW Keywords to represent the 6 possible log-levels:
+00 0001  Trace    0x0000 0000 0000 0001
+00 0010  Debug    0x0000 0000 0000 0002
+00 0100  Info     0x0000 0000 0000 0004
+00 1000  Warning  0x0000 0000 0000 0008
+01 0000  Error    0x0000 0000 0000 0010
+10 0000  Fatal    0x0000 0000 0000 0020
+
+Thus the question remains:  Should every logger be a category?   Or should every log-output statement be able to specify a category?
+
+Or.. I could roll the 'category' into the same class as LogLevel. Especially since I'm thinking of having them both amount to the same concept.
+
+One example of a pre-defined category?  method entry/exit, named "LogCategoryMethodEntryExit".
+
+TraceEventLevel has these values:
+Always
+Critical
+Error
+Informational
+Verbose
+Warning
+
+mapping:
+  Always        > 
+  Critical      > Fatal
+  Error         > Error
+  Informational > Info
+  Verbose       > Trace
+  Warning       > Warn
+
+Within LognutEventSource itself, is a different enum.
+  Microsoft.Dialognostics.Tracing.EventLevel can be
+    LogAlways*
+    Critical
+    Error
+    Informational
+    Verbose
+    Warning
+
+
+Q: Are these a 'level' in that we choose one and all that are under it do not get logged?
+
+*I may not need to use these at all. The turning on and off of levels, may be better done within the preciding C#
+code as it is for other types of output.
+
+
+*I may want to consider requiring the user/developer to define his own enum of categories,
+instead of using string literals to name them.

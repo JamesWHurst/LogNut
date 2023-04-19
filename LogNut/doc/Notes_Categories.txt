@@ -1,0 +1,61 @@
+﻿
+I just realized a rather obvious need: LogManager needs 2 on-off switches.
+One, overrides everything else and serves as a simple one-line way to turn logging on or off.
+The other, is overridable by everything else, and simply establishes the default (on or off).
+
+IsLoggingEnabled
+IsLoggingEnabledByDefault
+
+or
+
+IsLoggingTurnedOff ?  <- no, this reverses the logic and introduces different langauge.
+
+
+
+I'm thinking that with cat, my existing logging methods become confused and messed-up.
+I may want to NOT have methods like
+  LogTrace( object objectMessage )
+and
+  LogTrace( cat, objectMessage )
+because cat is also an object.
+Okay - so, because of the cat overloads, I changed most of the logging methods to log a string instead of an object.
+
+
+
+Q: How to handle the interaction between levels and categories?
+
+1. By default each category is neither on nor off. It's IsEnabled returns bool?
+   Thus it has no effect until it is either enabled or disabled.
+
+2. Make it sequential. Initially all cats are enabled. But if, say, Trace is turned off,
+   and then AFTER that the cat is turned on -- then that log is enabled.
+
+3. Or I could make it even more complex. Instead of a LogCategory object, I could define a class
+   that combines Level and Categories.
+
+
+What if I want to, say, turn on Category "USB" only for level Warning or above?
+
+Well I *could* just use a single logger, and set it's level that way (since loggers have levels).
+
+But wait - when I log shit, I do not AT THAT POINT need to specify that I am only logging level X
+on category Y. I just specify the level and category (as I do now) but in my configuration-code
+specify levels for categories.
+
+Ok thus, in determining whether a given log statement produces output:
+
+LogManager.Config.IsFileOutputEnabled
+LogManager.Config.LowestLevelThatIsEnabled
+LogManager.Config.IsLoggingEnabled        <- overrides IsFileOutputEnabled when false
+
+Logger.LowestLevelThatIsEnabled_Override  <- overrides Config.LowestLevelThatIsEnabled
+Logger.IsEnabled                          <- overrides Config.IsLoggingEnabled, and Logger.LowestLevelThatIsEnabled_Override
+
+LogCategory.LowestLevelThatIsEnabled      <- overrides Config.LowestLevelThatIsEnabled and Logger.LowestLevelThatIsEnabled
+LogCategory.IsEnabled                     <- overrides everything.
+
+
+Thus for a simple one-statement that shuts off logging, I'll need to
+1. Set LogManager.Config.IsLoggingDisabled to true, and
+2. Call ClearOverrides (or equivalent) on all loggers and categories.
+For this I'll provide LogManager.TurnOffAllLogging.

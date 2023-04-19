@@ -1,0 +1,9 @@
+﻿
+
+
+Some code-samples:
+
+  var pipe = new WindowsEventLogOutputPipe();
+  LogManager.AttachOutputPipe( new WindowsEventLogOutputPipe() );
+  var emailPipe = LogManager.GetOutputPipe<EmailOutputPipe>();
+
