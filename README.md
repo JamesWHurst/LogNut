@@ -29,5 +29,6 @@ Features/Advantages of LogNut:
 * Video how-to tutorials for quickly putting LogNut to use, to follow shortly
 * (TBD) With the appropriate server-subscription, you can receive realtime log output on your Android phone or tablet
 
-Author: James Witt Hurst
+
+Original Author: James Witt Hurst
 
